@@ -4,7 +4,7 @@ describe ChartsController, type: :controller do
       before { @entry = create(:entry) }
       it 'renders show page' do
         get :show, id: @entry.date
-        expect(response).to render_template('charts/show')
+        expect(response).to render_template 'charts/show'
       end
     end
     context 'invalid entry' do
