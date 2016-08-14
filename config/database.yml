@@ -1,0 +1,17 @@
+default: &default
+  adapter: postgresql
+  pool: 5
+  encoding: unicode
+  timeout: 5000
+
+development:
+  <<: *default
+  database: ph_tweet_development
+
+test:
+  <<: *default
+  database: ph_tweet_test
+
+production:
+  <<: *default
+  database: ph_tweet_production
