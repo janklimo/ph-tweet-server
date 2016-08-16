@@ -1,6 +1,8 @@
 ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
+require 'rails_helper'
+require 'helpers/common_helpers'
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
@@ -8,6 +10,8 @@ RSpec.configure do |config|
   end
 
   config.include FactoryGirl::Syntax::Methods
+  config.include CommonHelpers
+
   config.mock_with :rspec
 
   config.use_transactional_fixtures = false
