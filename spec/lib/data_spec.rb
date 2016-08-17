@@ -15,8 +15,11 @@ describe 'data:load_posts' do
   end
   it 'loads data and creates records' do
     task.invoke
+    # entry
     entry = Entry.last
     expect(entry.date).to eq(Date.today - 1)
+
+    #posts
     expect(entry.posts.count).to eq 5
     top_post = entry.posts.first
     expect(top_post.rank).to eq 1
@@ -27,5 +30,19 @@ describe 'data:load_posts' do
       "utm_medium=api&utm_source=Application%3A+Momentum+Analyzer" \
       "+%28ID%3A+3237%29"
     expect(top_post.votes).to eq 1303
+
+    #users
+    # - hunter
+    expect(top_post.hunter.twitter).to eq 'jckmgn'
+    expect(top_post.hunter.role).to eq 'hunter'
+    expect(top_post.hunter.image_url).to eq "https://ph-avatars.imgix.net" \
+      "/129066/original?auto=format&fit=crop&crop=faces&w=120&h=120"
+    expect(top_post.hunter.name).to eq 'Jack Morgan'
+    # - makers
+    expect(top_post.makers.last.twitter).to eq 'LuisvonAhn'
+    expect(top_post.makers.last.role).to eq 'maker'
+    expect(top_post.makers.last.image_url).to eq "https://ph-avatars.imgix" \
+      ".net/610708/original?auto=format&fit=crop&crop=faces&w=120&h=120"
+    expect(top_post.makers.last.name).to eq "Luis von Ahn"
   end
 end
