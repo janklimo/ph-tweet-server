@@ -1,5 +1,5 @@
 class ChartsController < ApplicationController
-  def index
+  def hello
     @votes = load_all_votes
   end
 
@@ -33,7 +33,7 @@ class ChartsController < ApplicationController
   def load_votes_batch(newer = 0)
     # My Slack Emoji post id: 70014
     params = {order: 'asc', newer: newer}
-    token = 'use ENV var'
+    token = ENV['TOKEN']
     res = RestClient::Request.execute(
       method: :get,
       url: 'https://api.producthunt.com/v1/posts/70014/votes',

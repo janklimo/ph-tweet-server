@@ -4,6 +4,8 @@ describe 'data:load_posts' do
   before do
     posts_double = double(body: read_fixtures(path: 'posts.json'))
     allow(ENV).to receive(:[]).with('TOKEN').and_return('123')
+
+    # mock posts response
     allow(RestClient::Request).to receive(:execute).with(
       method: :get,
       url: 'https://api.producthunt.com/v1/posts',
@@ -12,6 +14,28 @@ describe 'data:load_posts' do
         'Authorization': 'Bearer 123'
       }
     ).and_return posts_double
+
+    # mock post votes response
+    # page 1
+    votes_p1_double = double(body: read_fixtures(path: 'votes_page_1.json'))
+    allow(RestClient::Request).to receive(:execute).with(
+      method: :get,
+      url: /\d+/,
+      headers: {
+        params: {order: 'asc', newer: 0},
+        'Authorization': 'Bearer 123'
+      }
+    ).and_return votes_p1_double
+    # page 2
+    votes_p2_double = double(body: read_fixtures(path: 'votes_page_2.json'))
+    allow(RestClient::Request).to receive(:execute).with(
+      method: :get,
+      url: /\d+/,
+      headers: {
+        params: {order: 'asc', newer: 4689724},
+        'Authorization': 'Bearer 123'
+      }
+    ).and_return votes_p2_double
   end
   it 'loads data and creates records' do
     task.invoke
