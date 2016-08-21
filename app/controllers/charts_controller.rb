@@ -20,4 +20,13 @@ class ChartsController < ApplicationController
       redirect_to not_found_charts_path
     end
   end
+
+  def data
+    begin
+      @entry = Entry.find_by!(date: params[:id])
+      render json: @entry
+    rescue ActiveRecord::StatementInvalid
+      redirect_to not_found_charts_path
+    end
+  end
 end
