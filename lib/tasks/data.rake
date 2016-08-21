@@ -32,6 +32,7 @@ namespace :data do
     end
 
     entry.posts.each do |post|
+      puts "Updating votes series for #{post.name}, ranked ##{post.rank}..."
       votes_data = load_all_votes(post.external_id)
       sum = 0
       # votes can appear a couple days before the product is officially posted
@@ -39,9 +40,11 @@ namespace :data do
       series = votes_data
         .group_by_hour { |v| v['created_at'] }
         .map { |k, v| [k, sum += v.size] }
-        .select { |e| e[0] >= date }
+        .select { |e| e[0] >= 25.hours.ago }
       post.update(series: series)
+      puts "#{post.name}, ranked ##{post.rank} updated!"
     end
+    puts "Done!"
   end
 end
 

@@ -4,7 +4,7 @@ class ChartsController < ApplicationController
   def show
     begin
       @entry = Entry.includes(:posts).find_by!(date: params[:id])
-      @chart_data = @entry.posts.map do |post|
+      @chart_data = @entry.posts.order(:rank).map do |post|
         { name: "##{post.rank} #{post.name}", data: post.series }
       end
       if params[:rank].present?
