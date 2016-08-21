@@ -1,47 +1,23 @@
 class ChartsController < ApplicationController
-  def hello
-    @votes = load_all_votes
-  end
-
-  def test
-  end
+  PH_ORANGE = "#da552f"
 
   def show
     begin
-      @entry = Entry.find_by!(date: params[:id])
+      @entry = Entry.includes(:posts).find_by!(date: params[:id])
+      @chart_data = @entry.posts.map do |post|
+        { name: "##{post.rank} #{post.name}", data: post.series }
+      end
+      if params[:rank].present?
+        rank = (1..5).include?(params[:rank].to_i) ?
+          params[:rank].to_i : 1
+      else
+        rank = 1
+      end
+      @post = @entry.posts.find_by(rank: rank)
+      @colors = ["#353535", "#6d6d6d", "#8d8d8d", "#aeaeae", "#dddddd"]
+      @colors[rank - 1] = PH_ORANGE
     rescue ActiveRecord::StatementInvalid
       redirect_to not_found_charts_path
     end
-  end
-
-  private
-
-  def load_all_votes
-    votes = []
-    newer = 0
-
-    loop do
-      batch = load_votes_batch(newer)
-      votes.concat(batch)
-      newer = batch.last['id']
-      break if batch.size < 50
-    end
-
-    votes
-  end
-
-  def load_votes_batch(newer = 0)
-    # My Slack Emoji post id: 70014
-    params = {order: 'asc', newer: newer}
-    token = ENV['TOKEN']
-    res = RestClient::Request.execute(
-      method: :get,
-      url: 'https://api.producthunt.com/v1/posts/70014/votes',
-      headers: {
-        params: params,
-        'Authorization': "Bearer #{token}"
-      }
-    )
-    JSON.parse(res.body)['votes']
   end
 end

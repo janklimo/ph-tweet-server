@@ -17,7 +17,7 @@ describe 'data:load_posts' do
 
     # mock post votes response
     # page 1
-    votes_p1_double = double(body: read_fixtures(path: 'votes_page_1.json'))
+    @votes_p1_double = double(body: read_fixtures(path: 'votes_page_1.json'))
     allow(RestClient::Request).to receive(:execute).with(
       method: :get,
       url: /\d+/,
@@ -25,9 +25,9 @@ describe 'data:load_posts' do
         params: {order: 'asc', newer: 0},
         'Authorization': 'Bearer 123'
       }
-    ).and_return votes_p1_double
+    ).and_return @votes_p1_double
     # page 2
-    votes_p2_double = double(body: read_fixtures(path: 'votes_page_2.json'))
+    @votes_p2_double = double(body: read_fixtures(path: 'votes_page_2.json'))
     allow(RestClient::Request).to receive(:execute).with(
       method: :get,
       url: /\d+/,
@@ -35,7 +35,7 @@ describe 'data:load_posts' do
         params: {order: 'asc', newer: 4689724},
         'Authorization': 'Bearer 123'
       }
-    ).and_return votes_p2_double
+    ).and_return @votes_p2_double
   end
   it 'loads data and creates records' do
     task.invoke
@@ -68,5 +68,8 @@ describe 'data:load_posts' do
     expect(top_post.makers.last.image_url).to eq "https://ph-avatars.imgix" \
       ".net/610708/original?auto=format&fit=crop&crop=faces&w=120&h=120"
     expect(top_post.makers.last.name).to eq "Luis von Ahn"
+
+    # votes
+    expect(@votes_p2_double).to have_received(:body).exactly(5).times
   end
 end

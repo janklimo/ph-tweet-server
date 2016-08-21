@@ -1,4 +1,51 @@
-<h1>Chart show page</h1>
-
-<%= pie_chart({"Football" => 10, "Basketball" => 5},
-              library: { plotOptions: { series: { animation: false } } }) %>
+<div class="container">
+  <div class="header">
+    <div class="logo-container">
+      <%= image_tag 'ph-logo.png', alt: 'ph-logo', class: 'ph-logo' %>
+    </div>
+    <div class="headline-container">
+      <h1 class='headline'>Most Upvoted Products of
+        <%= @entry.date.strftime(" %b %-d, %Y") %>
+      </h1>
+      <h2 class="tagline">
+        <span class="rank">#<%= @post.rank %></span>
+        <%= @post.name %>
+        <span class="count"> (<%= @post.votes %> votes)</span>
+      </h2>
+    </div>
+    <div class="users-container">
+      <div class="image-container">
+        <%= image_tag @post.hunter.image_url, alt: 'thumbnail',
+          id: 'hunter-thumb', class: 'thumb' %>
+        <span class="badge hunter">H</span>
+      </div>
+      <% @post.makers.each_with_index do |maker, i| %>
+        <div class="image-container">
+          <%= image_tag maker.image_url, alt: 'thumbnail',
+            id: "maker-#{i + 1}-thumb", class: 'thumb' %>
+          <span class="badge maker">M</span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <script type="text/javascript" charset="utf-8">
+    Highcharts.setOptions({
+      global: {
+        timezoneOffset: 420
+      }
+    });
+  </script>
+  <div class="chart">
+    <%= line_chart(@chart_data, colors: @colors,
+    library: {
+      plotOptions: {
+        series: {
+          animation: false
+        }
+      },
+      chart: {
+        height: 360
+      }
+    }) %>
+  </div>
+</div>

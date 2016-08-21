@@ -5,10 +5,3 @@ application.</p>
 
 <p>If you like what you see, please
 <%= link_to 'say hi!', 'https://twitter.com/janklimo' %></p>
-
-<%=
-  sum = 0
-  line_chart @votes
-    .group_by_hour { |v| v['created_at'] }
-    .map { |k, v| [k, sum += v.size] }
-%>

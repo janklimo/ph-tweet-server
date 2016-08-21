@@ -32,7 +32,15 @@ namespace :data do
     end
 
     entry.posts.each do |post|
-      p load_all_votes.size
+      votes_data = load_all_votes(post.external_id)
+      sum = 0
+      # votes can appear a couple days before the product is officially posted
+      # we record these votes but don't show them on the chart
+      series = votes_data
+        .group_by_hour { |v| v['created_at'] }
+        .map { |k, v| [k, sum += v.size] }
+        .select { |e| e[0] >= date }
+      post.update(series: series)
     end
   end
 end
@@ -43,12 +51,12 @@ def build_user(role:, data:)
               name: data['name'])
 end
 
-def load_all_votes
+def load_all_votes(id)
   votes = []
   newer = 0
 
   loop do
-    batch = load_votes_batch(newer)
+    batch = load_votes_batch(id, newer)
     votes.concat(batch)
     newer = batch.last['id']
     break if batch.size < 50
@@ -57,13 +65,13 @@ def load_all_votes
   votes
 end
 
-def load_votes_batch(newer = 0)
+def load_votes_batch(id, newer = 0)
   # My Slack Emoji post id: 70014
   params = {order: 'asc', newer: newer}
   token = ENV['TOKEN']
   res = RestClient::Request.execute(
     method: :get,
-    url: 'https://api.producthunt.com/v1/posts/70014/votes',
+    url: "https://api.producthunt.com/v1/posts/#{id}/votes",
     headers: {
       params: params,
       'Authorization': "Bearer #{token}"
