@@ -3,7 +3,7 @@
 }
 
 .header {
-  margin-bottom: 50px;
+  margin-bottom: 45px;
 
   .logo-container {
     display: inline-block;
@@ -83,4 +83,24 @@
     color: $gray;
     margin-left: 5px;
   }
+}
+
+.chart {
+  display: block;
+  height: 350px;
+}
+
+.footer {
+  font-size: 12px;
+  margin-left: 14px;
+  color: #aeaeae;
+
+  .separator {
+    color: #6d6d6d;
+    margin: 0 7px;
+  }
+}
+
+.orange {
+  color: #da552f;
 }
