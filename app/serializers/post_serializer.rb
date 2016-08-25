@@ -6,6 +6,6 @@ class PostSerializer < ActiveModel::Serializer
   end
 
   def makers
-    object.users.maker.where.not(twitter: nil).map { |m| m.twitter }
+    object.users.maker.where.not(twitter: [nil, '']).map { |m| m.twitter }
   end
 end
