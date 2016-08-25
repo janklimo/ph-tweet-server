@@ -1,6 +1,10 @@
 class ChartsController < ApplicationController
   PH_ORANGE = "#da552f"
 
+  def hello
+    @entries = Entry.includes(:posts).order(date: :desc)
+  end
+
   def show
     begin
       @entry = Entry.includes(:posts).find_by!(date: params[:id])

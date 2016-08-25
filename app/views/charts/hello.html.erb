@@ -1,7 +1,41 @@
 <h1>Hello!</h1>
 
-<p>This is the server part of Product Hunt recongition tweet
-application.</p>
+<p>This is the server part of
+  <%= link_to '@tophuntsdaily', 'https://twitter.com/tophuntsdaily',
+      target: '_blank'%>.
+</p>
 
 <p>If you like what you see, please
-<%= link_to 'say hi!', 'https://twitter.com/janklimo' %></p>
+<%= link_to 'say hi', 'https://twitter.com/janklimo', target: '_blank'%>!
+</p>
+
+<p>Below you can find all the indexed dates. Have fun exploring!</p>
+
+<table class="table-fill">
+  <thead>
+    <tr>
+    <th class="text-left">Date</th>
+    <th class="text-left">Top Products</th>
+    <th class="text-left">Total Votes</th>
+    <th class="text-left"></th>
+    </tr>
+  </thead>
+  <tbody class="table-hover">
+    <% @entries.each do |entry| %>
+      <tr>
+        <td class="text-left">
+          <%= entry.date.strftime(" %b %-d, %Y") %>
+        </td>
+        <td class="text-left">
+          <%= entry.posts.sort_by { |p| p['rank'] }.map { |p| p.name }.join(', ') %>
+        </td>
+        <td class="text-left">
+          <%= entry.posts.inject(0) { |sum, p| sum + p.votes } %>
+        </td>
+        <td class="text-left">
+          <%= link_to 'View', chart_path(entry.date) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
