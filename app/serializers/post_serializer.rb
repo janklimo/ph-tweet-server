@@ -2,6 +2,7 @@ class PostSerializer < ActiveModel::Serializer
   attributes :id, :hunter, :makers, :url, :rank
 
   def hunter
+    return  "" unless object.hunter.twitter
     object.hunter.twitter
   end
 
