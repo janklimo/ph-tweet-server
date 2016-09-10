@@ -17,8 +17,18 @@
 
   .users-container {
     float: right;
-    padding: 10px;
-    margin-top: 27px;
+    margin-top: 5px;
+    width: 320px;
+
+    .hunter-container {
+      float: right;
+      margin-bottom: 5px;
+    }
+
+    .makers-container {
+      float: right;
+      clear: both;
+    }
 
     .thumb {
       width: 45px;
@@ -28,6 +38,8 @@
     .image-container {
       display: inline-block;
       position: relative;
+      float: right;
+      margin-left: 5px;
     }
 
     .badge {
