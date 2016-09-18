@@ -59,10 +59,17 @@ def load_all_votes(id)
   newer = 0
 
   loop do
-    batch = load_votes_batch(id, newer)
-    votes.concat(batch)
-    newer = batch.last['id']
-    break if batch.size < 50
+    # occasionally, PH server will return votes as []
+    # retry loading votes if that happens
+    begin
+      batch = load_votes_batch(id, newer)
+      votes.concat(batch)
+      newer = batch.last['id']
+      break if batch.size < 50
+    rescue NoMethodError
+      puts "Loading votes failed, retrying."
+      retry
+    end
   end
 
   votes

@@ -17,6 +17,8 @@ describe 'data:load_posts' do
 
     # mock post votes response
     # page 1
+    # simulate failure to load any votes
+    @failed_double = double(body: "{ \"votes\": [] }")
     @votes_p1_double = double(body: read_fixtures(path: 'votes_page_1.json'))
     allow(RestClient::Request).to receive(:execute).with(
       method: :get,
@@ -25,7 +27,7 @@ describe 'data:load_posts' do
         params: {order: 'asc', newer: 0},
         'Authorization': 'Bearer 123'
       }
-    ).and_return @votes_p1_double
+    ).and_return(@failed_double, @votes_p1_double)
     # page 2
     @votes_p2_double = double(body: read_fixtures(path: 'votes_page_2.json'))
     allow(RestClient::Request).to receive(:execute).with(
