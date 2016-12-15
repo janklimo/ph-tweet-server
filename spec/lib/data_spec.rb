@@ -6,13 +6,10 @@ describe 'data:load_posts' do
     allow(ENV).to receive(:[]).with('TOKEN').and_return('123')
 
     # mock posts response
-    allow(RestClient::Request).to receive(:execute).with(
-      method: :get,
-      url: 'https://api.producthunt.com/v1/posts',
-      headers: {
-        params: { day: (Date.today - 1).to_s },
-        'Authorization': 'Bearer 123'
-      }
+    allow(HTTParty).to receive(:get).with(
+      'https://api.producthunt.com/v1/posts',
+      query: { 'day' => (Date.today - 1).to_s },
+      headers: { 'Authorization' => "Bearer 123" }
     ).and_return posts_double
 
     # mock post votes response
@@ -20,23 +17,17 @@ describe 'data:load_posts' do
     # simulate failure to load any votes
     @failed_double = double(body: "{ \"votes\": [] }")
     @votes_p1_double = double(body: read_fixtures(path: 'votes_page_1.json'))
-    allow(RestClient::Request).to receive(:execute).with(
-      method: :get,
-      url: /\d+/,
-      headers: {
-        params: {order: 'asc', newer: 0},
-        'Authorization': 'Bearer 123'
-      }
+    allow(HTTParty).to receive(:get).with(
+      /\d+/,
+      query: { 'order' => 'asc' },
+      headers: { 'Authorization' => "Bearer 123" }
     ).and_return(@failed_double, @votes_p1_double)
     # page 2
     @votes_p2_double = double(body: read_fixtures(path: 'votes_page_2.json'))
-    allow(RestClient::Request).to receive(:execute).with(
-      method: :get,
-      url: /\d+/,
-      headers: {
-        params: {order: 'asc', newer: 4689724},
-        'Authorization': 'Bearer 123'
-      }
+    allow(HTTParty).to receive(:get).with(
+      /\d+/,
+      query: { 'order' => 'asc', 'newer' => 4689724 },
+      headers: { 'Authorization' => "Bearer 123" }
     ).and_return @votes_p2_double
   end
   it 'loads data and creates records' do
@@ -72,6 +63,6 @@ describe 'data:load_posts' do
     expect(top_post.makers.last.name).to eq "Luis von Ahn"
 
     # votes
-    expect(@votes_p2_double).to have_received(:body).exactly(5).times
+    expect(@votes_p2_double).to have_received(:body).exactly(4).times
   end
 end

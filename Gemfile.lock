@@ -102,6 +102,8 @@ GEM
       multi_json (~> 1.8)
     hirb (0.7.3)
     http_parser.rb (0.6.0)
+    httparty (0.14.0)
+      multi_xml (>= 0.5.2)
     i18n (0.7.0)
     jazz_fingers (3.0.2)
       awesome_print (~> 1.6)
@@ -136,6 +138,7 @@ GEM
     mini_portile2 (2.1.0)
     minitest (5.9.0)
     multi_json (1.12.1)
+    multi_xml (0.5.5)
     nenv (0.2.0)
     nokogiri (1.6.8)
       mini_portile2 (~> 2.1.0)
@@ -193,8 +196,6 @@ GEM
       ffi (>= 0.5.0)
     rdoc (4.2.2)
       json (~> 1.4)
-    rest-client (1.6.7)
-      mime-types (>= 1.16)
     rspec-core (3.5.1)
       rspec-support (~> 3.5.0)
     rspec-expectations (3.5.0)
@@ -261,12 +262,12 @@ DEPENDENCIES
   factory_girl_rails
   groupdate
   guard-livereload (~> 2.5)
+  httparty
   jazz_fingers
   jbuilder (~> 2.0)
   jquery-rails
   pg
   rails (= 4.2.4)
-  rest-client
   rspec-rails
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
@@ -276,4 +277,4 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
 
 BUNDLED WITH
-   1.12.5
+   1.13.5

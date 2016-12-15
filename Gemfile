@@ -20,8 +20,8 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'groupdate'
 gem 'chartkick'
-gem 'rest-client'
 gem 'active_model_serializers', '~> 0.10.0'
+gem 'httparty'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

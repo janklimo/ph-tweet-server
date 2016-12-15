@@ -1,16 +1,13 @@
+require 'httparty'
+
 namespace :data do
   desc 'Load all the posts for a given day'
   task load_posts: :environment do
     date = Date.today - 1
-    params = { day: date.to_s }
-    token = ENV['TOKEN']
-    res = RestClient::Request.execute(
-      method: :get,
-      url: 'https://api.producthunt.com/v1/posts',
-      headers: {
-        params: params,
-        'Authorization': "Bearer #{token}"
-      }
+    res = HTTParty.get(
+      'https://api.producthunt.com/v1/posts',
+      query: { 'day' => date.to_s },
+      headers: { 'Authorization' => "Bearer #{ENV['TOKEN']}" }
     )
     posts = JSON.parse(res.body)['posts']
     top_5 = posts.sort_by{ |p| p['votes_count'] }.reverse![0..4]
@@ -59,33 +56,31 @@ def load_all_votes(id)
   newer = 0
 
   loop do
-    # occasionally, PH server will return votes as []
-    # retry loading votes if that happens
     begin
       batch = load_votes_batch(id, newer)
       votes.concat(batch)
       newer = batch.last['id']
       break if batch.size < 50
     rescue NoMethodError
-      puts "Loading votes failed, retrying."
-      retry
+      puts "Loading votes failed, skipping."
+      break
     end
   end
 
   votes
 end
 
-def load_votes_batch(id, newer = 0)
-  # My Slack Emoji post id: 70014
-  params = {order: 'asc', newer: newer}
-  token = ENV['TOKEN']
-  res = RestClient::Request.execute(
-    method: :get,
-    url: "https://api.producthunt.com/v1/posts/#{id}/votes",
-    headers: {
-      params: params,
-      'Authorization': "Bearer #{token}"
-    }
+def load_votes_batch(id, newer)
+  query = { 'order' => 'asc' }
+
+  if newer > 0
+    query.merge!({ 'newer' => newer })
+  end
+
+  res = HTTParty.get(
+    "https://api.producthunt.com/v1/posts/#{id}/votes",
+    query: query,
+    headers: { 'Authorization' => "Bearer #{ENV['TOKEN']}" }
   )
   JSON.parse(res.body)['votes']
 end
