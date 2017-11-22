@@ -41,7 +41,10 @@ namespace :data do
       post.update(series: series)
       puts "#{post.name}, ranked ##{post.rank} updated!"
     end
-    puts "Done!"
+    puts "Done importing data!"
+    puts "Cleaning up ..."
+    deleted = Entry.where("created_at < ?", 1.year.ago).destroy_all
+    puts "Cleaned up #{deleted.size} entries."
   end
 end
 

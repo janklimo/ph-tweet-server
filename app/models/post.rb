@@ -1,6 +1,6 @@
 class Post < ActiveRecord::Base
   belongs_to :entry
-  has_many :users
+  has_many :users, dependent: :destroy
 
   def hunter
     users.hunter.first
