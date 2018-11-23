@@ -67,6 +67,10 @@ def load_all_votes(id)
     rescue NoMethodError
       puts "Loading votes failed, skipping."
       break
+    rescue TypeError
+      puts "PH returned nil response. Sleeping for 20s and retrying..."
+      sleep 20
+      retry
     end
   end
 
