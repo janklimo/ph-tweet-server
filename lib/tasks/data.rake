@@ -84,10 +84,15 @@ def load_votes_batch(id, newer)
     query.merge!({ 'newer' => newer })
   end
 
+  url = "https://api.producthunt.com/v1/posts/#{id}/votes"
+
+  puts "Requesting #{url} with query #{query} ..."
+
   res = HTTParty.get(
-    "https://api.producthunt.com/v1/posts/#{id}/votes",
+    url,
     query: query,
     headers: { 'Authorization' => "Bearer #{ENV['TOKEN']}" }
   )
+
   JSON.parse(res.body)['votes']
 end
